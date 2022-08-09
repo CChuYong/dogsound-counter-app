@@ -30,30 +30,37 @@ import {
   ViewStyle,
 } from 'react-native';
 
-const {StatusBarManager} = NativeModules;
-import {
-  Colors,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
 import * as SecureStore from 'expo-secure-store';
+
+import messaging from '@react-native-firebase/messaging';
 
 import {Dimensions} from 'react-native';
 import axios, {AxiosError} from 'axios';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import MainPage from './pages/MainPage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_HOSTNAME = 'http://114.205.21.171:9999';
 const {width, height} = Dimensions.get('window');
 const Stack = createNativeStackNavigator();
+async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
 const App = () => {
   const [isDarkMode, setDarkMode] = useState(useColorScheme() === 'dark');
   useEffect(() => {
     Appearance.addChangeListener(({colorScheme}) => {
       setDarkMode(colorScheme === 'dark');
     });
+    requestUserPermission();
   });
   return (
     <NavigationContainer>
@@ -88,6 +95,16 @@ const Login = ({navigation}) => {
     Appearance.addChangeListener(({colorScheme}) => {
       setDarkMode(colorScheme === 'dark');
     });
+    (async () => {
+      const before = await SecureStore.getItemAsync('username');
+      if (before) {
+        await messaging().unsubscribeFromTopic(before);
+        await SecureStore.deleteItemAsync('token');
+        await SecureStore.deleteItemAsync('targetName');
+        await AsyncStorage.removeItem('lastPrice');
+        await AsyncStorage.removeItem('lastElements');
+      }
+    })();
   });
   const backgroundStyle = StyleSheet.create({
     container: {
@@ -110,6 +127,7 @@ const Login = ({navigation}) => {
       ).data;
 
       if (data.succeed) {
+        await SecureStore.setItemAsync('username', username);
         await SecureStore.setItemAsync('token', data.message);
         navigation.push('Home');
       } else {
@@ -235,6 +253,25 @@ const SubApp = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [content, setContent] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  useEffect(() => {
+    SecureStore.getItemAsync('username').then(username => {
+      if (username) {
+        messaging().subscribeToTopic(username);
+      }
+    });
+
+    // messaging()
+    //   .getToken()
+    //   .then(token => {
+    //     Alert.alert(token);
+    //     console.log(token);
+    //   });
+    // const unsubscribe = messaging().onMessage(async remoteMessage => {
+    //   Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    // });
+
+    //return unsubscribe;
+  }, []);
   const checkValiditiy = async () => {
     try {
       const token = await SecureStore.getItemAsync('token');
@@ -290,21 +327,36 @@ const SubApp = ({navigation}) => {
   const updatePrice = async () => {
     const valid = await checkValiditiy();
     if (valid) {
+      const lastPrice = await AsyncStorage.getItem('lastPrice');
+      if (lastPrice) {
+        setToPay(parseInt(lastPrice, 10));
+      }
       try {
         const data = await axios.get(`${API_HOSTNAME}/data/toPay`);
+        AsyncStorage.setItem('lastPrice', data.data.message.toString());
         setToPay(parseInt(data.data.message, 10));
-      } catch (err: AxiosError) {
-        Alert.alert(err.cause.message);
-      }
+      } catch (err) {}
     }
   };
 
   const updateElements = async () => {
     const valid = await checkValiditiy();
     if (valid) {
-      const elems = await axios.get(`${API_HOSTNAME}/data`);
+      const lastElements = await AsyncStorage.getItem('lastElements');
+      const elementArr = [];
+      let lastIndex = -1;
+      if (lastElements) {
+        elementArr.push(...JSON.parse(lastElements));
+        lastIndex = elementArr[0].id || -1;
+      }
+      try {
+        const elems = await axios.get(`${API_HOSTNAME}/data/${lastIndex}`);
+        elementArr.unshift(...elems.data);
+        AsyncStorage.setItem('lastElements', JSON.stringify(elementArr));
+      } catch (err) {}
+
       setElements(
-        elems.data.map((elem: any) => {
+        elementArr.map(elem => {
           return (
             <View
               style={{
@@ -386,7 +438,7 @@ const SubApp = ({navigation}) => {
       .then(() => setRefreshing(false));
   }, []);
 
-  const [elements, setElements] = useState([]);
+  const [elements, setElements] = useState<Array<Element>>([]);
   const [toPay, setToPay] = useState(0);
   // const [statusBarHeight, setStatusBarHeight] = useState(0);
   useEffect(() => {
@@ -525,10 +577,16 @@ const SubApp = ({navigation}) => {
                 alignItems: 'center',
                 width: width * 0.8,
               }}>
-              <Text
-                style={{color: '#374151', fontSize: 18, fontWeight: 'bold'}}>
-                개소리 카운터
-              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  AsyncStorage.removeItem('lastElements').then(updateElements);
+                }}>
+                <Text
+                  style={{color: '#374151', fontSize: 18, fontWeight: 'bold'}}>
+                  개소리 카운터
+                </Text>
+              </TouchableOpacity>
+
               <View
                 style={{
                   display: 'flex',
