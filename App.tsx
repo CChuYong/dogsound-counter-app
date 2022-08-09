@@ -43,65 +43,32 @@ import {Dimensions} from 'react-native';
 import axios, {AxiosError} from 'axios';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
+import MainPage from './pages/MainPage';
 
 const API_HOSTNAME = 'http://114.205.21.171:9999';
-
 const {width, height} = Dimensions.get('window');
-const Section: React.FC<
-  PropsWithChildren<{
-    title: string;
-  }>
-> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 const Stack = createNativeStackNavigator();
 const App = () => {
+  const [isDarkMode, setDarkMode] = useState(useColorScheme() === 'dark');
+  useEffect(() => {
+    Appearance.addChangeListener(({colorScheme}) => {
+      setDarkMode(colorScheme === 'dark');
+    });
+  });
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{headerShown: false, gestureEnabled: false}}>
-        <Stack.Screen name="Home" component={SubApp} />
+        <Stack.Screen
+          name="Home"
+          component={SubApp}
+          initialParams={{
+            width: width,
+            height: height,
+            API_HOSTNAME: API_HOSTNAME,
+            isDarkMode: isDarkMode,
+          }}
+        />
         <Stack.Screen name="Login" component={Login} />
       </Stack.Navigator>
     </NavigationContainer>
@@ -109,7 +76,10 @@ const App = () => {
 };
 
 function toFormattedNumber(number: number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return number
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    .replace('-', '');
 }
 
 const Login = ({navigation}) => {
@@ -125,7 +95,7 @@ const Login = ({navigation}) => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: isDarkMode ? '#ffffff' : '#111111',
+      backgroundColor: '#ffffff',
     },
   });
   const [username, setUsername] = useState('');
@@ -215,6 +185,7 @@ const Login = ({navigation}) => {
                   borderColor: '#E5E7EB',
                   borderWidth: 1,
                   borderRadius: 10,
+                  marginBottom: 15,
                 }}
                 onChangeText={text => setUsername(text)}
                 placeholder="Username"
@@ -232,7 +203,7 @@ const Login = ({navigation}) => {
                 }}
                 secureTextEntry={true}
                 onChangeText={text => setPassword(text)}
-                placeholder="Username"
+                placeholder="Password"
               />
               <TouchableOpacity style={{marginTop: 10}} onPress={doLogin}>
                 <View
@@ -312,6 +283,7 @@ const SubApp = ({navigation}) => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: '#ffffff',
     },
   });
 
@@ -345,7 +317,7 @@ const SubApp = ({navigation}) => {
               <View
                 style={{
                   flex: 1,
-                  flexDirection: 'row',
+                  flexDirection: 'column',
                   width: 90 * (width / 100),
                   justifyContent: 'space-between',
                   alignItems: 'center',
@@ -353,33 +325,52 @@ const SubApp = ({navigation}) => {
                 <View
                   style={{
                     display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-end',
-                    padding: 30,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: 90 * (width / 100),
+                    paddingTop: 30,
+                    paddingHorizontal: 30,
+                    paddingBottom: 10,
                   }}>
                   <Text
                     style={{
                       fontSize: 20,
                       fontWeight: 'bold',
+                      color: '#4B5563',
                     }}>
                     {`${elem.speaker}`}
                   </Text>
                   <Text
                     style={{
                       fontSize: 20,
-                      fontWeight: 'bold',
+                      fontWeight: '600',
+                      color: '#6B7280',
+                      flexShrink: 1,
+                      width: 50 * (width / 100),
+                      textAlign: 'right',
                     }}>
                     {`${elem.content}`}
                   </Text>
                 </View>
-                <Text
+                <View
                   style={{
-                    fontSize: 20,
-                    fontWeight: 'bold',
+                    flex: 1,
+                    width: 90 * (width / 100),
+                    paddingRight: 30,
+                    paddingBottom: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
                   }}>
-                  {`${elem.price}`}
-                </Text>
-                <Text>({elem.speakAt})</Text>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 'bold',
+                      color: '#9CA3AF',
+                    }}>
+                    {`${elem.price}원`}
+                  </Text>
+                </View>
               </View>
             </View>
           );
@@ -419,38 +410,35 @@ const SubApp = ({navigation}) => {
     },
     modalView: {
       margin: 20,
-      backgroundColor: 'white',
-      borderRadius: 20,
+      backgroundColor: '#FFFFFF',
+      display: 'flex',
+      borderRadius: 15,
       padding: 35,
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
+      paddingBottom: 20,
+      width: width * 0.8,
+      alignItems: 'flex-start',
       elevation: 5,
     },
     button: {
-      borderRadius: 20,
       padding: 10,
       elevation: 2,
-    },
-    buttonOpen: {
-      backgroundColor: '#FFE082',
-    },
-    buttonClose: {
-      backgroundColor: '#FFE082',
+      width: '100%',
+      display: 'flex',
+      alignItems: 'flex-end',
     },
     textStyle: {
-      color: 'white',
+      color: '#3B82F6',
+      fontSize: 18,
       fontWeight: 'bold',
       textAlign: 'center',
     },
     modalText: {
-      marginBottom: 15,
-      textAlign: 'center',
+      marginBottom: 0,
+      textAlign: 'left',
+      color: '#4B5563',
+      paddingBottom: 20,
+      fontWeight: 'bold',
+      fontSize: 20,
     },
   });
   const [temporaryTarget, setTemporaryTarget] = useState('');
@@ -458,8 +446,18 @@ const SubApp = ({navigation}) => {
     <SafeAreaView
       style={{
         ...backgroundStyle.container,
-        backgroundColor: isDarkMode ? Colors.black : Colors.white,
       }}>
+      <View
+        style={{
+          width: width,
+          height: height,
+          backgroundColor: '#000000',
+          opacity: 0.7,
+          position: 'absolute',
+          zIndex: 100,
+          display: modalVisible ? 'flex' : 'none',
+        }}
+      />
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{
@@ -480,18 +478,21 @@ const SubApp = ({navigation}) => {
               <Text style={styles.modalText}>대상 닉네임을 입력하세요</Text>
               <TextInput
                 style={{
-                  height: 45,
-                  width: 50 * (width / 100),
-                  backgroundColor: '#ffffff',
-                  borderWidth: 1,
+                  height: 56,
+                  width: '100%',
+                  backgroundColor: '#F9FAFB',
+                  padding: 20,
                   borderRadius: 13,
                   marginBottom: 10,
+                  fontSize: 18,
+                  color: '#4B5563',
+                  fontWeight: 'bold',
                 }}
                 defaultValue={target}
                 onChangeText={setTemporaryTarget}
               />
               <Pressable
-                style={[styles.button, styles.buttonClose]}
+                style={[styles.button]}
                 onPress={() => {
                   setModalVisible(!modalVisible);
                   if (temporaryTarget.length > 2) {
@@ -507,71 +508,83 @@ const SubApp = ({navigation}) => {
 
         <View
           style={{
-            width: 90 * (width / 100),
-            height: 20 * (height / 100),
-            borderRadius: 13,
-            backgroundColor: '#FFB300',
+            width: width,
+            height: 18 * (height / 100),
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-start',
             alignItems: 'center',
-            padding: 20,
-            marginBottom: 20,
+            margin: 20,
           }}>
           <View
             style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-            <Text style={{color: '#FFFFFF', fontWeight: '600', fontSize: 25}}>
-              당신이 내셔야 할 금액은...
-            </Text>
-            <Text style={{color: '#FFFFFF', fontWeight: '800', fontSize: 30}}>
-              {toFormattedNumber(toPay)}원
-            </Text>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                (async () => {
-                  await SecureStore.deleteItemAsync('token');
-                  await checkValiditiy();
-                })();
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: width * 0.8,
               }}>
+              <Text
+                style={{color: '#374151', fontSize: 18, fontWeight: 'bold'}}>
+                개소리 카운터
+              </Text>
               <View
                 style={{
-                  width: 40 * (width / 100),
-                  height: 5 * (height / 100),
-                  borderRadius: 13,
-                  backgroundColor: '#FFE082',
                   display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
                 }}>
-                <Text style={{color: '#ffffff', fontSize: 20}}>
-                  로그아웃하기
+                <TouchableOpacity
+                  onPress={() => {
+                    (async () => {
+                      await SecureStore.deleteItemAsync('token');
+                      await checkValiditiy();
+                    })();
+                  }}>
+                  <Text
+                    style={{
+                      color: '#10B981',
+                      fontSize: 15,
+                      paddingBottom: 5,
+                      fontWeight: 'bold',
+                    }}>
+                    로그아웃
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                  <Text
+                    style={{
+                      color: '#D1D5DB',
+                      fontSize: 15,
+                      fontWeight: 'bold',
+                    }}>
+                    대상 설정하기
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View
+              style={{
+                width: width * 0.8,
+                marginTop: 30,
+              }}>
+              <View style={{display: 'flex', flexDirection: 'column'}}>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: '#9CA3AF',
+                    fontWeight: 'bold',
+                    marginBottom: 5,
+                  }}>
+                  현재 잔고 ({toPay < 0 ? '내가 지는중' : '내가 이기는중'})
+                </Text>
+                <Text
+                  style={{fontSize: 40, color: '#374151', fontWeight: 'bold'}}>
+                  {toFormattedNumber(toPay)}원
                 </Text>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <View
-                style={{
-                  width: 40 * (width / 100),
-                  height: 5 * (height / 100),
-                  borderRadius: 13,
-                  backgroundColor: '#FFE082',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft: 10,
-                }}>
-                <Text style={{color: '#ffffff', fontSize: 20}}>
-                  대상 설정하기
-                </Text>
-              </View>
-            </TouchableOpacity>
+            </View>
           </View>
         </View>
 
@@ -592,7 +605,7 @@ const SubApp = ({navigation}) => {
         <View
           style={{
             width: 90 * (width / 100),
-            height: 5 * (height / 100),
+            height: 55,
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'center',
@@ -602,11 +615,15 @@ const SubApp = ({navigation}) => {
           }}>
           <TextInput
             style={{
-              height: 45,
-              width: 75 * (width / 100),
-              backgroundColor: '#ffffff',
+              height: 55,
+              width: 70 * (width / 100),
+              backgroundColor: '#F9FAFB',
+              borderColor: '#E5E7EB',
               borderWidth: 1,
               borderRadius: 13,
+              padding: 10,
+              fontWeight: 'bold',
+              color: '#4B5563',
             }}
             value={content}
             onChangeText={setContent}
@@ -616,15 +633,20 @@ const SubApp = ({navigation}) => {
               style={{
                 height: '100%',
                 borderRadius: 13,
-                backgroundColor: '#FFB300',
+                width: 20 * (width / 100),
+                backgroundColor: '#10B981',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: 10,
+
                 marginLeft: 10,
                 position: 'relative',
               }}>
-              <Text style={{color: '#FFFFFF'}}>개소리</Text>
+              <Text
+                style={{color: '#FFFFFF', fontSize: 20, fontWeight: 'bold'}}>
+                개소리
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
