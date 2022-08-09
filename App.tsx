@@ -29,6 +29,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+
 const {StatusBarManager} = NativeModules;
 import {
   Colors,
@@ -106,9 +107,11 @@ const App = () => {
     </NavigationContainer>
   );
 };
+
 function toFormattedNumber(number: number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
+
 const Login = ({navigation}) => {
   const [isDarkMode, setDarkMode] = useState(useColorScheme() === 'dark');
   useEffect(() => {
@@ -161,11 +164,9 @@ const Login = ({navigation}) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: '#FFB300',
           }}>
           <View
             style={{
-              backgroundColor: '#FFB300',
               height: (height / 5) * 2,
               width: width,
               flex: 1,
@@ -175,12 +176,20 @@ const Login = ({navigation}) => {
             }}>
             <Text
               style={{
+                fontSize: 50,
+                fontWeight: 'bold',
+                textAlign: 'center',
+              }}>
+              🐶
+            </Text>
+            <Text
+              style={{
                 fontSize: 30,
                 fontWeight: 'bold',
                 textAlign: 'center',
-                color: '#FFFFFF',
+                color: '#374151',
               }}>
-              DogSound Counter
+              개소리 카운터
             </Text>
           </View>
           <View
@@ -198,47 +207,49 @@ const Login = ({navigation}) => {
             <View>
               <TextInput
                 style={{
-                  height: 45,
-                  width: 75 * (width / 100),
-                  backgroundColor: '#ffffff',
-                  borderBottomWidth: 1,
+                  height: 49,
+                  width: 90 * (width / 100),
+                  paddingVertical: 14,
+                  paddingHorizontal: 12,
+                  backgroundColor: '#F9FAFB',
+                  borderColor: '#E5E7EB',
+                  borderWidth: 1,
+                  borderRadius: 10,
                 }}
                 onChangeText={text => setUsername(text)}
                 placeholder="Username"
               />
               <TextInput
                 style={{
-                  height: 45,
-                  width: 75 * (width / 100),
-                  backgroundColor: '#ffffff',
-                  borderBottomWidth: 1,
-                  marginTop: 20,
+                  height: 49,
+                  width: 90 * (width / 100),
+                  paddingVertical: 14,
+                  paddingHorizontal: 12,
+                  backgroundColor: '#F9FAFB',
+                  borderColor: '#E5E7EB',
+                  borderWidth: 1,
+                  borderRadius: 10,
                 }}
                 secureTextEntry={true}
                 onChangeText={text => setPassword(text)}
-                placeholder={'Password'}
+                placeholder="Username"
               />
               <TouchableOpacity style={{marginTop: 10}} onPress={doLogin}>
                 <View
                   style={{
-                    width: 75 * (width / 100),
-                    height: 45,
-                    borderRadius: 8,
-                    backgroundColor: '#FFB300',
+                    width: 90 * (width / 100),
+                    height: 56,
+                    borderRadius: 13,
+                    backgroundColor: '#10B981',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    marginTop: 40,
+                    marginTop: 10,
                   }}>
-                  <Text style={{color: '#FFFFFF'}}>Login</Text>
+                  <Text style={{color: '#FFFFFF', fontSize: 20}}>로그인</Text>
                 </View>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={{marginTop: 10}}
-              onPress={() => Alert.alert('어쩔티비')}>
-              <Text>비밀번호를 잊으셨나요?</Text>
-            </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -327,6 +338,9 @@ const SubApp = ({navigation}) => {
               style={{
                 width: 90 * (width / 100),
                 marginBottom: 20,
+                paddingBottom: 10,
+                backgroundColor: '#F9FAFB',
+                borderRadius: 20,
               }}>
               <View
                 style={{
@@ -336,16 +350,37 @@ const SubApp = ({navigation}) => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-end',
+                    padding: 30,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                    }}>
+                    {`${elem.speaker}`}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                    }}>
+                    {`${elem.content}`}
+                  </Text>
+                </View>
                 <Text
                   style={{
                     fontSize: 20,
                     fontWeight: 'bold',
                   }}>
-                  {`${elem.speaker}님의 ${elem.price}원어치 개소리`}
+                  {`${elem.price}`}
                 </Text>
                 <Text>({elem.speakAt})</Text>
               </View>
-              <Text>{elem.content}</Text>
             </View>
           );
         }),
