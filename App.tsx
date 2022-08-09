@@ -99,7 +99,6 @@ const Login = ({navigation}) => {
       const before = await SecureStore.getItemAsync('username');
       if (before) {
         await messaging().unsubscribeFromTopic(before);
-        await SecureStore.deleteItemAsync('token');
         await SecureStore.deleteItemAsync('targetName');
         await AsyncStorage.removeItem('lastPrice');
         await AsyncStorage.removeItem('lastElements');
@@ -266,9 +265,10 @@ const SubApp = ({navigation}) => {
     //     Alert.alert(token);
     //     console.log(token);
     //   });
-    // const unsubscribe = messaging().onMessage(async remoteMessage => {
-    //   Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    // });
+    messaging().onMessage(async () => {
+      updatePrice();
+      updateElements();
+    });
 
     //return unsubscribe;
   }, []);
