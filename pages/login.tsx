@@ -43,7 +43,7 @@ const Login = ({route, navigation}) => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#ffffff',
+      backgroundColor: isDarkMode ? '#111111' : '#ffffff',
     },
   });
   const [username, setUsername] = useState('');
@@ -106,14 +106,14 @@ const Login = ({route, navigation}) => {
                 fontSize: 30,
                 fontWeight: 'bold',
                 textAlign: 'center',
-                color: '#374151',
+                color: isDarkMode? '#ffffff' : '#374151',
               }}>
               개소리 카운터
             </Text>
           </View>
           <View
             style={{
-              backgroundColor: '#FFFFFF',
+              backgroundColor: isDarkMode? '#111111':'#FFFFFF',
               width: width,
               flex: 1,
               flexGrow: 1,

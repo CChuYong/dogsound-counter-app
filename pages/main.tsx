@@ -94,7 +94,17 @@ const SubApp = ({route, navigation}) => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#ffffff',
+      backgroundColor: isDarkMode ? '#111111' : '#ffffff',
+    },
+  });
+
+  const elementStyle = StyleSheet.create({
+    elemStyle: {
+      width: 90 * (width / 100),
+      marginBottom: 20,
+      paddingBottom: 10,
+      backgroundColor: isDarkMode ? '#D1D5DB' : '#F9FAFB',
+      borderRadius: 20,
     },
   });
 
@@ -132,14 +142,7 @@ const SubApp = ({route, navigation}) => {
       setElements(
         elementArr.map(elem => {
           return (
-            <View
-              style={{
-                width: 90 * (width / 100),
-                marginBottom: 20,
-                paddingBottom: 10,
-                backgroundColor: '#F9FAFB',
-                borderRadius: 20,
-              }}>
+            <View style={elementStyle.elemStyle}>
               <View
                 style={{
                   flex: 1,
@@ -356,7 +359,7 @@ const SubApp = ({route, navigation}) => {
                   AsyncStorage.removeItem('lastElements').then(updateElements);
                 }}>
                 <Text
-                  style={{color: '#374151', fontSize: 18, fontWeight: 'bold'}}>
+                  style={{color: isDarkMode ? '#ffffff' : '#374151', fontSize: 18, fontWeight: 'bold'}}>
                   개소리 카운터
                 </Text>
               </TouchableOpacity>
@@ -405,14 +408,14 @@ const SubApp = ({route, navigation}) => {
                 <Text
                   style={{
                     fontSize: 20,
-                    color: '#9CA3AF',
+                    color: isDarkMode ? '#FAFAFA' : '#9CA3AF',
                     fontWeight: 'bold',
                     marginBottom: 5,
                   }}>
                   현재 잔고 ({toPay < 0 ? '내가 지는중' : '내가 이기는중'})
                 </Text>
                 <Text
-                  style={{fontSize: 40, color: '#374151', fontWeight: 'bold'}}>
+                  style={{fontSize: 40, color: isDarkMode ? '#ffffff' : '#374151', fontWeight: 'bold'}}>
                   {toFormattedNumber(toPay)}원
                 </Text>
               </View>
@@ -449,7 +452,7 @@ const SubApp = ({route, navigation}) => {
             style={{
               height: 55,
               width: 70 * (width / 100),
-              backgroundColor: '#F9FAFB',
+              backgroundColor: isDarkMode ? '#D1D5DB' : '#F9FAFB',
               borderColor: '#E5E7EB',
               borderWidth: 1,
               borderRadius: 13,

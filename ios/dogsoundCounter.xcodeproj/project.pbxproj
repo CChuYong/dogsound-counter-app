@@ -12,9 +12,9 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		13C7884E4C46651C1692A8E9 /* libPods-dogsoundCounter-dogsoundCounterTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BBDE2CA36BB92FA8ED84087 /* libPods-dogsoundCounter-dogsoundCounterTests.a */; };
+		7DF1545C28A3ADB400F69927 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF1545B28A3ADB400F69927 /* GoogleService-Info.plist */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A21756C639ED3876BC607D56 /* libPods-dogsoundCounter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE50282763AD1099A4CDE46D /* libPods-dogsoundCounter.a */; };
-		A5957FCD28A3A6A8000652F2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A5957FCC28A3A6A8000652F2 /* GoogleService-Info.plist */; };
 		BBD01E1D6FC2BE33C700315E /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA745B5252AF654B4CD94CE /* ExpoModulesProvider.swift */; };
 		DA0AE6CB773E9112783CB734 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B76CDFCC706083540D4DCEA3 /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
@@ -43,9 +43,9 @@
 		57E23858C48E92A64D2AE2AC /* Pods-dogsoundCounter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dogsoundCounter.release.xcconfig"; path = "Target Support Files/Pods-dogsoundCounter/Pods-dogsoundCounter.release.xcconfig"; sourceTree = "<group>"; };
 		5EA745B5252AF654B4CD94CE /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-dogsoundCounter/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		7D65C0B328A2559900446AE6 /* dogsoundCounter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = dogsoundCounter.entitlements; path = dogsoundCounter/dogsoundCounter.entitlements; sourceTree = "<group>"; };
+		7DF1545B28A3ADB400F69927 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = dogsoundCounter/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9BBDE2CA36BB92FA8ED84087 /* libPods-dogsoundCounter-dogsoundCounterTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-dogsoundCounter-dogsoundCounterTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A5957FCC28A3A6A8000652F2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AE50282763AD1099A4CDE46D /* libPods-dogsoundCounter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-dogsoundCounter.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0CA03A77F7F1359204B325F /* Pods-dogsoundCounter-dogsoundCounterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dogsoundCounter-dogsoundCounterTests.release.xcconfig"; path = "Target Support Files/Pods-dogsoundCounter-dogsoundCounterTests/Pods-dogsoundCounter-dogsoundCounterTests.release.xcconfig"; sourceTree = "<group>"; };
 		B76CDFCC706083540D4DCEA3 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-dogsoundCounter-dogsoundCounterTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
@@ -93,7 +93,7 @@
 		13B07FAE1A68108700A75B9A /* dogsoundCounter */ = {
 			isa = PBXGroup;
 			children = (
-				A5957FCC28A3A6A8000652F2 /* GoogleService-Info.plist */,
+				7DF1545B28A3ADB400F69927 /* GoogleService-Info.plist */,
 				7D65C0B328A2559900446AE6 /* dogsoundCounter.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -279,8 +279,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				A5957FCD28A3A6A8000652F2 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				7DF1545C28A3ADB400F69927 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
